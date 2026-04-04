@@ -1,0 +1,8 @@
+api_url: https://api.gios.gov.pl/pjp-api/v1/rest
+page_size: 100
+request_headers:
+  accept: application/ld+json
+endpoints:
+  stations: station/findAll
+  # sensors: station/sensors
+  # measurements: data/getData

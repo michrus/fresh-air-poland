@@ -28,6 +28,11 @@ def setup_argparser():
         description="Script for database migration management."
     )
     # Add arguments
+    parser.add_argument(
+        "action", 
+        help="Action to perform",
+        choices=("makemigrations",)
+    )
     parser.add_argument("-dl", "--dialect", help="Database dialect", default="postgresql")
     parser.add_argument("-dv", "--driver", help="Database driver", default="psycopg2")
     parser.add_argument("-u", "--user", help="Database connection user name", required=True)
@@ -56,6 +61,19 @@ def setup_argparser():
     return parser
 
 
+def make_migrations(
+        db_connection_params: DBConnectionParameters,
+        changelog_table_name: str,
+        migrations_directory_path: str,
+        ):
+    """Runns makemigrations action."""
+    migration_applier = MigrationApplier(
+        db_connection_params=db_connection_params,
+        changelog_table_name=changelog_table_name,
+        migrations_directory_path=migrations_directory_path,
+    )
+    migration_applier.apply_remaining_migrations()
+
 def main():
     """Main function."""
 
@@ -78,12 +96,16 @@ def main():
         port=args.port,
         db_name=args.name,
     )
-    migration_applier = MigrationApplier(
-        db_connection_params=db_connection_params,
-        changelog_table_name=args.changelog_table_name,
-        migrations_directory_path=args.migrations_path,
-    )
-    migration_applier.apply_remaining_migrations()
+    if args.action == "makemigrations":
+        make_migrations(
+            db_connection_params=db_connection_params,
+            changelog_table_name=args.changelog_table_name,
+            migrations_directory_path=args.migrations_path,
+        )
+    else:
+        rootLogger.error("Unrecognized action %s", args.action)
+        return -1
+
     return 0
 
 

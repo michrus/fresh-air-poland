@@ -149,7 +149,7 @@ class MigrationApplier:
             else:
                 logging.getLogger().warning(
                     "Migration name: %s does not fit expected pattern. Skipping.",
-                    str(mig)
+                    m
                 )
         logging.getLogger().info("Retrieved list of migration files")
         return all_migrations

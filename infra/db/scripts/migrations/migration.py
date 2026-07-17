@@ -19,7 +19,7 @@ class Migration:
             self.name = None
 
     def __bool__(self):
-        return bool(self.number and self.name)
+        return bool(self.number is not None and self.name is not None)
 
     def __eq__(self, value):
         if isinstance(value, Migration):
